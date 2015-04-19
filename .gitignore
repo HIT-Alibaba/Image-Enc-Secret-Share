@@ -3,3 +3,6 @@ dump.rdb
 /*.egg-info
 .env
 dist
+__pycache__/*
+/keystore_*
+/*test*
