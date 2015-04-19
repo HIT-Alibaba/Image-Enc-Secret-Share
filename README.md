@@ -1,20 +1,5 @@
-密码学原理作业-2012
-=================
+密码学第三次作业，第一部分，图像加密与秘密共享
 
-注：每个题目下面列出更多不同的仓库以供参考
+DES图像加密算法使用自：
 
-### 1. 维吉尼亚密码
-
-
-* https://github.com/marcoszh/VigenereCipher (JAVA)
-* https://github.com/zhaoguoquan94/Vigen-re-cipher (Python)
-* https://github.com/winlandiano/Cryptography-Verginia (Python)
-* https://github.com/sorenchiron/VigenereCipher (C++)
-
-### 2. DES
-
-* https://github.com/LabiKyo/DES-Ruby (Ruby) 
-* https://github.com/udaysagar2177/DES (Python)
-* https://github.com/tarequeh/DES (C)
-* https://github.com/abbshr/Cryptography_DES_Analyze (C)
-* https://github.com/MaybeMercy/DesByC (C)
+* https://github.com/HIT-Alibaba/Cryptography-Principle-Assignments
