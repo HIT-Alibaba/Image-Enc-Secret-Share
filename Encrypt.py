@@ -4,8 +4,14 @@ from Crypto.Cipher import AES
 from Crypto import Random
 import random
 
+AES_BLOCK = 16
+GRAIN_SIZE = AES_BLOCK * 4
 
-def plaintext_to_cipher(key, msg):
+
+def __plaintext_to_cipher(key, msg):
+    msg_str = ''
+    for each in msg:
+        msg_str += chr(each)
     iv = Random.new().read(AES.block_size)
     encryptor = AES.new(key, AES.MODE_CBC, iv)
     return iv + encryptor.encrypt(msg)
@@ -16,26 +22,35 @@ def AES_with_given_keys(keys):
     keys_n = len(keys)
 
     filename = input("Input file name")
-    fs = open(filename, 'r')
+    fs = open(filename, 'rb')
     fs.seek(0, 0)
+    # msg = str(fs.read())
     msg = fs.read()
     fs.close()
 
     print('start encrypting...')
 
     # deal pad
-    x = len(msg) % 16
+    x = len(msg) % GRAIN_SIZE
     if x != 0:
-        msg_pad = msg + '0'*(16 - x)
+        msg_pad = msg + b'1'
+        msg_pad += b'0' * (GRAIN_SIZE-x-1)
 
     key_sequence = ''
-    msg_out = ''
+    msg_out = b''
 
-    for block in msg_pad:
+    l = len(msg_pad)
+    # for block in msg_pad:
+    i = 0
+    while i < l:
         index = random.randint(0, keys_n-1)
         key_sequence += str(index)
         key_used = keys[index]
-        msg_out += plaintext_to_cipher(key_used, block)
+        tmp = __plaintext_to_cipher(key_used, msg_pad[i: i+GRAIN_SIZE])
+        # msg_out.append(tmp)
+        # msg_out.join(tmp)
+        msg_out += tmp
+        i += GRAIN_SIZE
 
     fo = open("key_sequence.txt", 'w')
     fo.write(key_sequence)

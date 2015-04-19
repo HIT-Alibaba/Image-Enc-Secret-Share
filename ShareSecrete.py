@@ -4,7 +4,8 @@ import Encrypt
 
 
 def main():
-    Key_Util.key_distribute()
+    keys = Key_Util.key_distribute(10)
+    Encrypt.AES_with_given_keys(keys)
 
 
 if __name__ == '__main__':
