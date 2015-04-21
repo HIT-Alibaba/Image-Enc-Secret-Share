@@ -5,7 +5,7 @@ import random
 from Crypto.Hash import MD5
 import numpy as np
 
-POW2_20 = 1048576
+POW2_10 = 1024
 
 
 def __generate_key(n):
@@ -17,11 +17,19 @@ def __generate_key(n):
     for i in range(0, n):
         factor = ''
         for j in range(0, i + 1):
-            t = random.randint(0, POW2_20)
+            t = random.randint(0, POW2_10)
             factor += str(t)
             factors[i].append(t)
+        # print("系数拼凑:")
+        # print(factor)
+        # print("被哈希的:")
+        # print(factor.encode('utf-8'))
         hasher.update(factor.encode('utf-8'))
         keys[i] = hasher.digest()
+    # print("生成user keys:")
+    # print(keys)
+    # print("生成的factors")
+    # print(factors)
     return keys, factors
 
 
@@ -67,8 +75,14 @@ def key_restore(n, pieces, indexes):
         factors = np.linalg.solve(viriables, cup)
         key_ori = ''
         for x in range(i+1):
-            key_ori += str(int(factors[x]))
+            # print("系数拼凑:")
+            # print(int(factors[x]))
+            key_ori += str(round(float(factors[x])))
+        # print("被哈希的:")
+        # print(key_ori.encode('utf-8'))
         hasher.update(key_ori.encode('utf-8'))
         keys.append(hasher.digest())
         last_curse = i
+    # print("恢复user keys:")
+    # print(keys)
     return keys
