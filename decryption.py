@@ -9,6 +9,7 @@ from Crypto.Cipher import AES
 AES_BLOCK = 16
 GRAIN_SIZE = AES_BLOCK * 4
 DEC_GRAIN_SIZE = GRAIN_SIZE + 16
+BMP_HEAD_LENGTH = 54
 KEY_SEQUENCE_FILENAME = "key_sequence.txt"
 
 
@@ -37,6 +38,8 @@ def decrypt():
     fi = open(filename, 'rb')
     fi.seek(0, 0)
     msg = fi.read()
+    header = msg[0: BMP_HEAD_LENGTH]
+    msg = msg[BMP_HEAD_LENGTH:]
     fi.close()
 
     print("start decrypting")
@@ -52,7 +55,7 @@ def decrypt():
     i = 0
     msg_out = b''
     while i < ceiling:
-        if ksq[i//DEC_GRAIN_SIZE]>n_keys:
+        if ksq[i//DEC_GRAIN_SIZE]+1 > n_keys:
             msg_out += msg[i+AES_BLOCK: i+DEC_GRAIN_SIZE]
         else:
             decryptor = AES.new(keys[ksq[i//DEC_GRAIN_SIZE]], AES.MODE_CBC, msg[i: i+AES_BLOCK])
@@ -61,7 +64,7 @@ def decrypt():
         i += DEC_GRAIN_SIZE
 
     # deal with pad
-    if ksq[i//DEC_GRAIN_SIZE]>n_keys:
+    if ksq[i//DEC_GRAIN_SIZE]+1 > n_keys:
         tmp = msg[i+AES_BLOCK: i+DEC_GRAIN_SIZE]
     else:
         decryptor = AES.new(keys[ksq[i//DEC_GRAIN_SIZE]], AES.MODE_CBC, msg[i: i+AES_BLOCK])
@@ -72,7 +75,7 @@ def decrypt():
     msg_out += tmp[0: x]
 
     fo = open("DEC"+filename, 'wb')
-    fo.write(msg_out)
+    fo.write(header + msg_out)
     fo.close()
 
     print("end decrypting")

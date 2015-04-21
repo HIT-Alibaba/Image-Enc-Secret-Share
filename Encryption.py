@@ -6,6 +6,7 @@ import random
 
 AES_BLOCK = 16
 GRAIN_SIZE = AES_BLOCK * 4
+BMP_HEAD_LENGTH = 54
 
 
 def __plaintext_to_cipher(key, msg):
@@ -25,6 +26,8 @@ def AES_with_given_keys(keys):
     fs = open(filename, 'rb')
     fs.seek(0, 0)
     msg = fs.read()
+    header = msg[0: BMP_HEAD_LENGTH]
+    msg = msg[BMP_HEAD_LENGTH:]
     fs.close()
 
     print('start encrypting...')
@@ -59,7 +62,7 @@ def AES_with_given_keys(keys):
     fo.close()
 
     fo = open("ENC_"+filename, 'wb')
-    fo.write(msg_out)
+    fo.write(header + msg_out)
     fo.close()
 
     print('end encrypting...')

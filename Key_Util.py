@@ -20,16 +20,8 @@ def __generate_key(n):
             t = random.randint(0, POW2_20)
             factor += str(t)
             factors[i].append(t)
-        print("系数拼凑:")
-        print(factor)
-        print("被哈希的:")
-        print(factor.encode('utf-8'))
         hasher.update(factor.encode('utf-8'))
         keys[i] = hasher.digest()
-    print("生成user keys:")
-    print(keys)
-    print("生成的factors")
-    print(factors)
     return keys, factors
 
 
@@ -75,14 +67,8 @@ def key_restore(n, pieces, indexes):
         factors = np.linalg.solve(viriables, cup)
         key_ori = ''
         for x in range(i+1):
-            print("系数拼凑:")
-            print(int(factors[x]))
             key_ori += str(int(factors[x]))
-        print("被哈希的:")
-        print(key_ori.encode('utf-8'))
         hasher.update(key_ori.encode('utf-8'))
         keys.append(hasher.digest())
         last_curse = i
-    print("恢复user keys:")
-    print(keys)
     return keys
