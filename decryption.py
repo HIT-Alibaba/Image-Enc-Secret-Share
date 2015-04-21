@@ -14,9 +14,11 @@ KEY_SEQUENCE_FILENAME = "key_sequence.txt"
 
 def __get_pieces():
     n = int(input("请输入参与解密人员人数:\n"))
-    pieces = [[]] * n
-    indexes = [[]] * n
+    pieces = [[] for row in range(n)]
+    indexes = [[] for r in range(n)]
     for i in range(0, n):
+        # pieces.append([])
+        # indexes.append([])
         file_name = input("请输入用户 "+str(i+1)+" 的密钥碎片文件名:\n")
         fi = open(file_name, 'r')
         lines = fi.readlines()
@@ -24,12 +26,12 @@ def __get_pieces():
         fi.close()
         for line in range(1, len(lines)):
             pieces[i].append(int(lines[line]))
-    return pieces, n
+    return pieces, indexes, n
 
 
 def decrypt():
-    pieces, n = __get_pieces()
-    keys = ku.key_restore(n, pieces)
+    pieces, indexes, n = __get_pieces()
+    keys = ku.key_restore(n, pieces, indexes)
     n_keys = len(keys)
     filename = input("请输入待解密文件名\n")
     fi = open(filename, 'rb')

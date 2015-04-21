@@ -12,7 +12,7 @@ def __generate_key(n):
     """利用<i><b>拉格朗日插值法</i></b>生成密钥，初始密钥为低阶系数到高阶系数的拼接字符串，根据这些初始密钥MD5散列出AES密钥"""
 
     keys = [''] * n
-    factors = [[]] * n
+    factors = [[] for r in range(n)]
     hasher = MD5.new()
     for i in range(0, n):
         factor = ''
@@ -28,6 +28,8 @@ def __generate_key(n):
         keys[i] = hasher.digest()
     print("生成user keys:")
     print(keys)
+    print("生成的factors")
+    print(factors)
     return keys, factors
 
 
@@ -40,9 +42,11 @@ def key_distribute(n = 10):
         buf = str(i)+'\n'
         for j in range(0, n):
             t = 0
+            x_powed = 1
             for k in range(0, j+1):
-                t += factors[j][k] * pow(i+1, k)
+                t += factors[j][k] * x_powed
                 # 当前是给第i个用户生成第j个密钥的碎片，所以将第j个密钥的第k项系数乘该用户的id，i的第几项幂
+                x_powed *= (i+1)
             buf += str(t)+'\n'
         fo.write(buf)
         fo.close()
@@ -50,16 +54,15 @@ def key_distribute(n = 10):
     print("finish key distributing!")
     return keys
 
-def key_restore(n, pieces):
+def key_restore(n, pieces, indexes):
     """根据碎片恢复密钥。对于给定的n*N的pieces,只能恢复前n个密钥"""
 
     # prepare
-    viriables = [[]] * n
+    viriables = [[1] for row in range(n)]
     keys = []
     for i in range(0, n):
-        viriables[i].append(1)
         for j in range(1, n):
-            viriables[i].append(viriables[i][j-1] * i)
+            viriables[i].append(viriables[i][j-1] * (indexes[i]+1))
 
     pieces_a = np.array(pieces)
     view_holder = [False] * len(pieces[0])
@@ -71,10 +74,10 @@ def key_restore(n, pieces):
         cup = np.compress(view_holder, pieces_a, axis=1).transpose(1, 0)[0]
         factors = np.linalg.solve(viriables, cup)
         key_ori = ''
-        for each in factors:
+        for x in range(i+1):
             print("系数拼凑:")
-            print(int(each))
-            key_ori += str(int(each))
+            print(int(factors[x]))
+            key_ori += str(int(factors[x]))
         print("被哈希的:")
         print(key_ori.encode('utf-8'))
         hasher.update(key_ori.encode('utf-8'))
