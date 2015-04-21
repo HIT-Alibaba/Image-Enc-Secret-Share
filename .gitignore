@@ -7,3 +7,4 @@ __pycache__/*
 /keystore_*
 /*test*
 /key_sequence.txt
+.idea/

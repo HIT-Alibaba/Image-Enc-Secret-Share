@@ -1,11 +1,14 @@
 __author__ = 'alex'
-import Key_Util
-import Encrypt
+import key_util
+import encryption
+import decryption
 
 
 def main():
-    keys = Key_Util.key_distribute(10)
-    Encrypt.AES_with_given_keys(keys)
+    n = int(input("请输入用户总数:\n"))
+    keys = key_util.key_distribute(n)
+    encryption.AES_with_given_keys(keys)
+    # decryption.decrypt()
 
 
 if __name__ == '__main__':

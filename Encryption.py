@@ -21,10 +21,9 @@ def __plaintext_to_cipher(key, msg):
 def AES_with_given_keys(keys):
     keys_n = len(keys)
 
-    filename = input("Input file name")
+    filename = input("请输入文件名:\n")
     fs = open(filename, 'rb')
     fs.seek(0, 0)
-    # msg = str(fs.read())
     msg = fs.read()
     fs.close()
 
@@ -35,6 +34,9 @@ def AES_with_given_keys(keys):
     if x != 0:
         msg_pad = msg + b'1'
         msg_pad += b'0' * (GRAIN_SIZE-x-1)
+    else:
+        msg_pad = msg + b'1'
+        msg_pad += b'0' * (GRAIN_SIZE-1)
 
     key_sequence = ''
     msg_out = b''
@@ -44,7 +46,7 @@ def AES_with_given_keys(keys):
     i = 0
     while i < l:
         index = random.randint(0, keys_n-1)
-        key_sequence += str(index)
+        key_sequence += (str(index)+'\n')
         key_used = keys[index]
         tmp = __plaintext_to_cipher(key_used, msg_pad[i: i+GRAIN_SIZE])
         # msg_out.append(tmp)
@@ -56,7 +58,7 @@ def AES_with_given_keys(keys):
     fo.write(key_sequence)
     fo.close()
 
-    fo = open("DEC_"+filename, 'wb')
+    fo = open("ENC_"+filename, 'wb')
     fo.write(msg_out)
     fo.close()
 
